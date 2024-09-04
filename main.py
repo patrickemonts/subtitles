@@ -38,7 +38,6 @@ def decr_text(event):
     global root, i
     # This is not a very nice function to call, but it works
     root.focus_force()
-    print(i)
     if i >= 1:
         i -= 1
         text=stringvec[i]
