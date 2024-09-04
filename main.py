@@ -1,5 +1,12 @@
 import tkinter as tk
 import sys
+import os
+
+# We are using global variables here, not recommended, but we are not writing a library here
+label = None
+stringvec = None
+root = None
+i = 0
 
 def incr_text(event):
     """
@@ -58,52 +65,64 @@ def scale_font(event):
     font_size = min(window_width // 20, window_height // 10)
     label.config(font=("Helvetica", font_size))
 
-# Create the main window
-root = tk.Tk()
+def main(fname):
+    # Create the main window
+    global root,label,stringvec,i
+    if os.path.exists(fname):
+        root = tk.Tk()
 
-# Make the window full screen
-# root.attributes('-fullscreen', True)
+        # Make the window full screen
+        # root.attributes('-fullscreen', True)
 
-# Make the window transparent
-# root.attributes('-alpha', 0.0)
-root.configure(bg="black")
+        # Make the window transparent
+        # root.attributes('-alpha', 0.0)
+        root.configure(bg="black")
 
-screen_width = root.winfo_screenwidth()
-screen_height = root.winfo_screenheight()
+        screen_width = root.winfo_screenwidth()
+        screen_height = root.winfo_screenheight()
 
-root.geometry(f"{screen_width}x{int(screen_height/4)}+0+{3*screen_height//4}")
-root.focus_force()
+        root.geometry(f"{screen_width}x{int(screen_height/4)}+0+{3*screen_height//4}")
+        root.focus_force()
 
-root.wm_attributes("-type", "dock")
+        root.wm_attributes("-type", "dock")
 
-# List of strings to display
-with open("subtitles.txt", "r") as f:
-    stringvec = f.readlines()
+        # List of strings to display
+        with open("subtitles.txt", "r") as f:
+            stringvec = f.readlines()
 
-stringvec = [x.strip() for x in stringvec if len(x.strip()) > 0]
-# print(stringvec)
+        stringvec = [x.strip() for x in stringvec if len(x.strip()) > 0]
+        # print(stringvec)
 
-# Create a label with the initial text "Foobar" in black
-label = tk.Label(root, text="", font=("Helvetica", 30), fg="white", bg="black")
-i = 0
+        # Create a label with the initial text "Foobar" in black
+        label = tk.Label(root, text="", font=("Helvetica", 30), fg="white", bg="black")
+        i = 0
 
+        # Bind the different events to the functions
+        label.bind("<Button-1>", incr_text)
+        root.bind("<Button-1>", incr_text)
+        root.bind("<Right>", incr_text)
+        label.bind("<Right>", incr_text)
+        root.bind("<Left>", decr_text)
+        label.bind("<Left>", decr_text)
+        root.bind("q", quit)
+        label.bind("q", quit)
 
-# Bind the different events to the functions
-label.bind("<Button-1>", incr_text)
-root.bind("<Button-1>", incr_text)
-root.bind("<Right>", incr_text)
-label.bind("<Right>", incr_text)
-root.bind("<Left>", decr_text)
-label.bind("<Left>", decr_text)
-root.bind("q", quit)
-label.bind("q", quit)
+        # Bind the scaling function to the window resize event
+        # root.bind("<Configure>", scale_font)
 
+        # Center the label in the window
+        label.pack(expand=True)
 
-# Bind the scaling function to the window resize event
-# root.bind("<Configure>", scale_font)
+        # Run the main loop
+        root.mainloop()
+    else:
+        print(f"File {args.fname} not found.",file=sys.stderr)
 
-# Center the label in the window
-label.pack(expand=True)
-
-# Run the main loop
-root.mainloop()
+if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser(description="Display subtitles on the screen.")
+    parser.add_argument(
+        "fname", type=str, help="The name of the file containing the subtitles."
+    )
+    args = parser.parse_args()
+    main(args.fname)
