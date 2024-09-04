@@ -85,8 +85,14 @@ def main(fname):
 
         screen_width = root.winfo_screenwidth()
         screen_height = root.winfo_screenheight()
+        display_fraction = 0.25
 
-        root.geometry(f"{screen_width}x{int(screen_height/4)}+0+{3*screen_height//4}")
+        display_height = int(screen_height * display_fraction)
+        display_width = screen_width
+        offset_x = 0
+        offset_y = int((1-display_fraction)*screen_height)
+
+        root.geometry(f"{display_width}x{display_height}+{offset_x}+{offset_y}")
         root.focus_force()
 
         root.wm_attributes("-type", "dock")
@@ -100,7 +106,7 @@ def main(fname):
         stringvec.insert(0,"")
 
         # Create a label with the initial text "Foobar" in black
-        label = tk.Label(root, text="", font=("Helvetica", 30), fg="white", bg="black")
+        label = tk.Label(root, text="", font=("Helvetica", 40), fg="white", bg="black")
         i = 0
 
         # Bind the different events to the functions
