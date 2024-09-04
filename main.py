@@ -38,9 +38,14 @@ def decr_text(event):
     global root, i
     # This is not a very nice function to call, but it works
     root.focus_force()
-    if i < len(stringvec) - 1:
+    print(i)
+    if i >= 1:
         i -= 1
-    label.config(text=stringvec[i])
+        text=stringvec[i]
+    else:
+        i = 0
+        text=""
+    label.config(text=text)
     # scale_font(event)
 
 
@@ -91,7 +96,8 @@ def main(fname):
             stringvec = f.readlines()
 
         stringvec = [x.strip() for x in stringvec if len(x.strip()) > 0]
-        # print(stringvec)
+        # We start on black
+        stringvec.insert(0,"")
 
         # Create a label with the initial text "Foobar" in black
         label = tk.Label(root, text="", font=("Helvetica", 30), fg="white", bg="black")
