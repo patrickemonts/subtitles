@@ -7,6 +7,8 @@ label = None
 stringvec = None
 root = None
 i = 0
+is_mode_auto = True
+delay = None
 
 def incr_text(event):
     """
@@ -16,13 +18,23 @@ def incr_text(event):
     Returns:
         None
     """
-    global root, i
+    global root, i, is_mode_auto
     # This is not a very nice function to call, but it works
     root.focus_force()
 
     if i < len(stringvec) - 1:
         i += 1
-    label.config(text=stringvec[i])
+        text = stringvec[i]
+        if stringvec[i] == "## START ##":
+            is_mode_auto = True
+            auto_update_label()
+        else:
+            if text == "## END ##":
+                is_mode_auto = False
+                text = ""
+            elif text == "## START ##":
+                text = ""
+            label.config(text=text)
     # scale_font(event)
 
 
@@ -35,17 +47,32 @@ def decr_text(event):
     None
     """
 
-    global root, i
+    global root, i, is_mode_auto
     # This is not a very nice function to call, but it works
+    is_mode_auto = False
     root.focus_force()
     if i >= 1:
         i -= 1
-        text=stringvec[i]
+        if stringvec[i] == "## START ##" or stringvec[i] == "## END ##":
+            text = ""
+        else:
+            text=stringvec[i]
     else:
         i = 0
         text=""
     label.config(text=text)
     # scale_font(event)
+
+def auto_update_label():
+    global i, is_mode_auto, delay
+    if i < len(stringvec):
+        i += 1
+        if stringvec[i] != "## END ##" and is_mode_auto:
+            label.config(text=stringvec[i])
+            root.after(delay*1000, auto_update_label)  # Schedule the next update in 5 seconds
+        else:
+            is_mode_auto = False
+            label.config(text="")
 
 
 def quit(event):
@@ -69,9 +96,12 @@ def scale_font(event):
     font_size = min(window_width // 20, window_height // 10)
     label.config(font=("Helvetica", font_size))
 
-def main(fname):
+def main(args):
     # Create the main window
-    global root,label,stringvec,i
+    global root, label, stringvec, i, delay
+    delay = args.delay
+    fname = args.fname
+    display_fraction = args.fraction
     if os.path.exists(fname):
         root = tk.Tk()
 
@@ -84,7 +114,6 @@ def main(fname):
 
         screen_width = root.winfo_screenwidth()
         screen_height = root.winfo_screenheight()
-        display_fraction = 0.25
 
         display_height = int(screen_height * display_fraction)
         display_width = screen_width
@@ -97,15 +126,16 @@ def main(fname):
         root.wm_attributes("-type", "dock")
 
         # List of strings to display
-        with open("subtitles.txt", "r") as f:
+        with open(args.fname, "r") as f:
             stringvec = f.readlines()
 
-        stringvec = [x.strip() for x in stringvec if len(x.strip()) > 0]
+        # stringvec = [x.strip() for x in stringvec if len(x.strip()) > 0]
+        stringvec = [x.strip() for x in stringvec] 
         # We start on black
         stringvec.insert(0,"")
 
         # Create a label with the initial text "Foobar" in black
-        label = tk.Label(root, text="", font=("Helvetica", 40), fg="white", bg="black")
+        label = tk.Label(root, text="", font=("Helvetica", 40), fg="white", bg="black", anchor=tk.CENTER, width = display_width)
         i = 0
 
         # Bind the different events to the functions
@@ -135,5 +165,11 @@ if __name__ == "__main__":
     parser.add_argument(
         "fname", type=str, help="The name of the file containing the subtitles."
     )
+    parser.add_argument(
+        "--fraction", type=float, default=0.25, help="Fraction of the screen height to use."
+    )
+    parser.add_argument(
+        "--delay", type=float, default=3, help="Delay in seconds for the automatic scrolling."
+    )
     args = parser.parse_args()
-    main(args.fname)
+    main(args)
