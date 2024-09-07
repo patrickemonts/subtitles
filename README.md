@@ -2,6 +2,15 @@
 
 This small piece of codes displays white text on a black background to provide subtitles for an artistic performance.
 
+# Requirements
+
+This tool is based on `tkinter`, there are no other python package dependencies which are not shipped with Python per default.
+By default, `tkinter` is shipped with Python as well.
+On Mac, however, you will have to install the `tkinter` package via `brew`:
+```
+brew install python-tk
+```
+
 # Usage
 Call the python program `main.py` with 
 ```python
