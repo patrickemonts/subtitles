@@ -131,6 +131,7 @@ def main(args):
 
         # stringvec = [x.strip() for x in stringvec if len(x.strip()) > 0]
         stringvec = [x.strip() for x in stringvec] 
+        stringvec = [x.replace('\\n','\n') for x in stringvec]
         # We start on black
         stringvec.insert(0,"")
 
