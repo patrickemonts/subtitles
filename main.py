@@ -69,7 +69,10 @@ def auto_update_label():
         i += 1
         if stringvec[i] != "## END ##" and is_mode_auto:
             label.config(text=stringvec[i])
-            root.after(delay*1000, auto_update_label)  # Schedule the next update in 5 seconds
+            n = len(stringvec[i])
+            delay_eff = 1000 + int(delay * (n/15) * 1000)
+            print(delay_eff)
+            root.after(delay_eff, auto_update_label)  # Schedule the next update in 5 seconds
         else:
             is_mode_auto = False
             label.config(text="")
@@ -170,7 +173,7 @@ if __name__ == "__main__":
         "--fraction", type=float, default=0.25, help="Fraction of the screen height to use."
     )
     parser.add_argument(
-        "--delay", type=float, default=5, help="Delay in seconds for the automatic scrolling."
+        "--delay", type=float, default=2, help="Delay in seconds for 15 characters. Will be scaled accordingly."
     )
     args = parser.parse_args()
     main(args)
