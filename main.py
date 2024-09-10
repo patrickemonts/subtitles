@@ -136,7 +136,7 @@ def main(args):
         stringvec.insert(0,"")
 
         # Create a label with the initial text "Foobar" in black
-        label = tk.Label(root, text="", font=("Helvetica", 40), fg="white", bg="black", anchor=tk.CENTER, width = display_width)
+        label = tk.Label(root, text="", font=("Roboto", 40), fg="white", bg="black", anchor=tk.CENTER, width = display_width)
         i = 0
 
         # Bind the different events to the functions
@@ -170,7 +170,7 @@ if __name__ == "__main__":
         "--fraction", type=float, default=0.25, help="Fraction of the screen height to use."
     )
     parser.add_argument(
-        "--delay", type=float, default=3, help="Delay in seconds for the automatic scrolling."
+        "--delay", type=float, default=5, help="Delay in seconds for the automatic scrolling."
     )
     args = parser.parse_args()
     main(args)
