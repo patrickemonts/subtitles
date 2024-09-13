@@ -71,7 +71,6 @@ def auto_update_label():
             label.config(text=stringvec[i])
             n = len(stringvec[i])
             delay_eff = 1000 + int(delay * (n/15) * 1000)
-            print(delay_eff)
             root.after(delay_eff, auto_update_label)  # Schedule the next update in 5 seconds
         else:
             is_mode_auto = False
@@ -143,12 +142,16 @@ def main(args):
         i = 0
 
         # Bind the different events to the functions
-        label.bind("<Button-1>", incr_text)
+        root.bind("<Next>", incr_text)
+        label.bind("<Next>", incr_text)
         root.bind("<Button-1>", incr_text)
+        label.bind("<Button-1>", incr_text)
         root.bind("<Right>", incr_text)
         label.bind("<Right>", incr_text)
         root.bind("<Left>", decr_text)
         label.bind("<Left>", decr_text)
+        root.bind("<Prior>", decr_text)
+        label.bind("<Prior>", decr_text)
         root.bind("q", quit)
         label.bind("q", quit)
 
